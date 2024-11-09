@@ -247,7 +247,21 @@
     let sheetNameDatas;
     let wStatus;  // 音声のstatus
     let wShowResult;  // 音声の出力結果
-    // Declare webkitSpeechRecognition
+    // 
+    const SYSTEM_PROMPT = `
+役割： あなたは中国語学習の先生です。私はあなたの生徒です。私が書いた中国語の作文を添削してください。
+作文： 作文の文章
+上記の形式で作文の文章をあなたに渡します。
+以下の項目で添削してください。
+添削基準：
+（１）　作文の内容を理解できるか？
+（２）　作文に中国語の文法に誤りがあれば指摘してください。
+（３）　文法の誤りを正した中国語文章も提示してください。
+（４）　文章でより良い表現があれば、中国語で提案してください。
+添削結果： 添削結果を出力してください。
+作文： `;
+
+// Declare webkitSpeechRecognition
     window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
     var recognition = new webkitSpeechRecognition();
 
@@ -492,13 +506,16 @@
         button = document.createElement('button');
         button.setAttribute('class', 'sakubunSave');
         button.setAttribute('onClick', 'sakubunSaveClick()');
+        button.setAttribute('class', 'sakubunSave tooltip');
+        
         button.innerHTML = '保存';
         divButton.appendChild(button);
         //
         button = document.createElement('button');
         button.setAttribute('class', 'sakubunSave');
         button.setAttribute('onClick', 'sakubunCopyClick()');
-        button.innerHTML = 'コピー';
+        
+        button.innerHTML = 'AI添削依頼';
         divButton.appendChild(button);
         //
         button = document.createElement('button');
@@ -525,13 +542,14 @@
       }
 
       }
-
+     
       //
 
     function sakubunCopyClick() {
       const sakubuns = document.querySelectorAll('.sakubun');
       const sakubun = sakubuns[sheetIndex];
-      navigator.clipboard.writeText(sakubun.value);
+      navigator.clipboard.writeText(SYSTEM_PROMPT + sakubun.value);
+      alert('作成した中国語文章をAIに添削してもらう文章を作り、クリップボードにコピーしました。Chatgpt,Copilot,Gemini等のAIに貼り付けてください。');
 
     }
     function sakubunReadClick() {
