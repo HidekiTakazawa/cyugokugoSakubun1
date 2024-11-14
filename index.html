@@ -317,7 +317,9 @@
     }
 
     recognition.onresult = function (event) {
-
+      const sakubuns = document.querySelectorAll('.sakubun');
+      const sakubun = sakubuns[sheetIndex];
+      // var uttr = new SpeechSynthesisUtterance(sakubun.value);
       var results = event.results;
       // show_result.innerHTML = '<div>' + results[0][0].transcript + '</div>';
 
@@ -325,7 +327,7 @@
         if (results[i].isFinal) {
 
           wShowResult.innerHTML += '<div>' + results[i][0].transcript + '</div>';
-
+          sakubun.value = sakubun.value + results[i][0].transcript;
           // hAnswer = results[i][0].transcript;
         } else {
 
