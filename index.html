@@ -541,16 +541,33 @@
       alert('作成した中国語文章をAIに添削してもらう文章を作り、クリップボードにコピーしました。Chatgpt,Copilot,Gemini等のAIに貼り付けてください。');
 
     }
-    function sakubunReadClick() {
-      const sakubuns = document.querySelectorAll('.sakubun');
-      const sakubun = sakubuns[sheetIndex];
-      var uttr = new SpeechSynthesisUtterance(sakubun.value);
-      uttr.lang = "zh-CN"
-      uttr.rate = speakSpeedRate();
-      speechSynthesis.cancel();
-      speechSynthesis.speak(uttr);
+    
+  function sakubunReadClick() {
+    const sakubuns = document.querySelectorAll('.sakubun');
+    const sakubun = sakubuns[sheetIndex];
+    var uttr = new SpeechSynthesisUtterance(sakubun.value);
+    uttr.lang = "zh-CN";
+    uttr.rate = speakSpeedRate();
 
+    // 利用可能な音声を確認
+    const voices = speechSynthesis.getVoices();
+    const chineseVoice = voices.find(voice => voice.lang === 'zh-CN');
+
+    if (chineseVoice) {
+      uttr.voice = chineseVoice;
+    } else {
+      console.warn('Chinese voice not found, using default voice.');
     }
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(uttr);
+  }
+
+  // 音声リストが更新されたときに再取得
+  speechSynthesis.onvoiceschanged = function() {
+    sakubunReadClick();
+  };
+
 
 
     function sakubunSaveClick() {
