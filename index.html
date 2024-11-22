@@ -252,6 +252,10 @@
     let sheetNameDatas;
     let wStatus;  // 音声のstatus
     let wShowResult;  // 音声の出力結果
+    let voices = [];
+     // 初期音声リストの取得
+    voices = speechSynthesis.getVoices();
+  // 音声リストが取得できない場合は、音声リストが取得できるようになるまで待機
     // 
     const SYSTEM_PROMPT = `
 役割： あなたは中国語学習の先生です。私はあなたの生徒です。私が書いた中国語の作文を添削してください。
@@ -563,10 +567,11 @@
     speechSynthesis.speak(uttr);
   }
 
-  // 音声リストが更新されたときに再取得
-  speechSynthesis.onvoiceschanged = function() {
-    sakubunReadClick();
+   // 音声リストが更新されたときに再取得
+   speechSynthesis.onvoiceschanged = function() {
+    voices = speechSynthesis.getVoices();
   };
+
 
 
 
