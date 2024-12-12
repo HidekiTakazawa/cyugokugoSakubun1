@@ -253,9 +253,9 @@
     let wStatus;  // 音声のstatus
     let wShowResult;  // 音声の出力結果
     let voices = [];
-     // 初期音声リストの取得
+    // 初期音声リストの取得
     voices = speechSynthesis.getVoices();
-  // 音声リストが取得できない場合は、音声リストが取得できるようになるまで待機
+    // 音声リストが取得できない場合は、音声リストが取得できるようになるまで待機
     // 
     const SYSTEM_PROMPT = `
 役割： あなたは中国語学習の先生です。私はあなたの生徒です。私が書いた中国語の作文を添削してください。
@@ -270,7 +270,7 @@
 添削結果： 添削結果を出力してください。
 作文： `;
 
-  
+
 
     // Declare webkitSpeechRecognition
     window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
@@ -329,7 +329,7 @@
       recognition.start();
     }
 
-   
+
     //
     mSakubunBtnClick.addEventListener('click', () => {
       const mSakubuns = document.querySelectorAll('.mSakubun');
@@ -545,32 +545,38 @@
       alert('作成した中国語文章をAIに添削してもらう文章を作り、クリップボードにコピーしました。Chatgpt,Copilot,Gemini等のAIに貼り付けてください。');
 
     }
-    
-  function sakubunReadClick() {
-    const sakubuns = document.querySelectorAll('.sakubun');
-    const sakubun = sakubuns[sheetIndex];
-    var uttr = new SpeechSynthesisUtterance(sakubun.value);
-    uttr.lang = "zh-CN";
-    uttr.rate = speakSpeedRate();
 
-    // 利用可能な音声を確認
-    const voices = speechSynthesis.getVoices();
-    const chineseVoice = voices.find(voice => voice.lang === 'zh-CN');
+    function sakubunReadClick() {
+      const sakubuns = document.querySelectorAll('.sakubun');
+      const sakubun = sakubuns[sheetIndex];
+      var uttr = new SpeechSynthesisUtterance(sakubun.value);
+      uttr.lang = "zh-CN";
+      uttr.rate = speakSpeedRate();
 
-    if (chineseVoice) {
-      uttr.voice = chineseVoice;
-    } else {
-      console.warn('Chinese voice not found, using default voice.');
+      // 利用可能な音声を確認
+      const voices = speechSynthesis.getVoices();
+      const chineseVoice = getChineseVoice();
+
+      if (chineseVoice) {
+        uttr.voice = chineseVoice;
+      } else {
+        console.warn('Chinese voice not found, using default voice.');
+      }
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(uttr);
+    }
+    function getChineseVoice() {
+      if (voices.length === 0) {
+        voices = speechSynthesis.getVoices();
+      }
+      return voices.find(voice => voice.lang === 'zh-CN');
     }
 
-    speechSynthesis.cancel();
-    speechSynthesis.speak(uttr);
-  }
-
-   // 音声リストが更新されたときに再取得
-   speechSynthesis.onvoiceschanged = function() {
-    voices = speechSynthesis.getVoices();
-  };
+    // 音声リストが更新されたときに再取得
+    speechSynthesis.onvoiceschanged = function () {
+      voices = speechSynthesis.getVoices();
+    };
 
 
 
@@ -617,6 +623,12 @@
       var uttr = new SpeechSynthesisUtterance(td.textContent);
       uttr.lang = "zh-CN"
       uttr.rate = speakSpeedRate();
+      const chineseVoice = getChineseVoice();
+      if (chineseVoice) {
+        uttr.voice = chineseVoice;
+      } else {
+        console.warn('Chinese voice not found, using default voice.');
+      }
       speechSynthesis.cancel();
       speechSynthesis.speak(uttr);
 
